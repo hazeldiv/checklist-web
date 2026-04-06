@@ -14,15 +14,15 @@ export function TodoItem({ todo, onToggle, onDelete }: TodoItemProps) {
   return (
     <div
       className={cn(
-        "group flex items-start justify-between p-3.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-md transition-all duration-300 hover:shadow-lg hover:scale-[1.005] hover:border-zinc-300 dark:hover:border-zinc-700",
+        "group flex items-center justify-between p-3.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-md transition-all duration-300 hover:shadow-lg hover:scale-[1.005] hover:border-zinc-300 dark:hover:border-zinc-700",
         todo.completed && "opacity-60 bg-zinc-50/50 dark:bg-zinc-900/50 grayscale-[0.2] shadow-sm"
       )}
     >
-      <div className="flex items-start gap-2.5 flex-1 min-w-0 pt-0.5">
+      <div className="flex items-center gap-2.5 flex-1 min-w-0">
         <button
           onClick={() => onToggle(todo.id)}
           className={cn(
-            "flex-shrink-0 mt-0.5 transition-colors rounded-full focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:focus:ring-zinc-600",
+            "flex-shrink-0 transition-colors rounded-full focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:focus:ring-zinc-600",
             todo.completed ? "text-zinc-500 dark:text-zinc-400" : "text-zinc-400 hover:text-zinc-600 dark:text-zinc-600 dark:hover:text-zinc-400"
           )}
         >

@@ -155,11 +155,11 @@ export default function Home() {
   const completedCount = todos.filter((t) => t.completed).length;
 
   return (
-    <div className="h-screen bg-zinc-50 dark:bg-black font-sans selection:bg-zinc-900 selection:text-white dark:selection:bg-white dark:selection:text-black overflow-hidden leading-snug">
+    <div className="h-[100dvh] bg-zinc-50 dark:bg-black font-sans selection:bg-zinc-900 selection:text-white dark:selection:bg-white dark:selection:text-black overflow-hidden leading-snug">
       <main className="h-full flex flex-col max-w-2xl mx-auto px-4 sm:px-6 py-2 sm:py-6 lg:py-8">
         {/* Header Section - Horizontal even on mobile */}
         <header className="flex items-start justify-between gap-2 sm:gap-4 mb-6 flex-shrink-0">
-          <div className="space-y-0.5 flex-1 min-w-0">
+          <div className="space-y-1 flex-1 min-w-0">
             <div className="flex items-center gap-2 sm:gap-3 text-zinc-900 dark:text-zinc-50">
               <div className="bg-zinc-900 dark:bg-white p-1.5 rounded-xl text-white dark:text-zinc-900 shadow-lg shadow-zinc-200 dark:shadow-none flex-shrink-0">
                 <CheckSquare className="w-5.5 h-5.5 sm:w-7 sm:h-7" />
