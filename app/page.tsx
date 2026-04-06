@@ -115,7 +115,7 @@ export default function Home() {
 
   return (
     <div className="h-screen bg-zinc-50 dark:bg-black font-sans selection:bg-zinc-900 selection:text-white dark:selection:bg-white dark:selection:text-black overflow-hidden leading-snug">
-      <main className="h-full flex flex-col max-w-2xl mx-auto px-4 sm:px-6 py-4 sm:py-6 lg:py-8">
+      <main className="h-full flex flex-col max-w-2xl mx-auto px-4 sm:px-6 py-2 sm:py-6 lg:py-8">
         {/* Header Section - Horizontal even on mobile */}
         <header className="flex items-start justify-between gap-2 sm:gap-4 mb-6 flex-shrink-0">
           <div className="space-y-0.5 flex-1 min-w-0">
