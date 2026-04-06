@@ -11,27 +11,52 @@ import { Download, CheckSquare, Trash2, ShieldAlert } from "lucide-react";
 import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 
-const PRIORITY_MAP: Record<Priority, number> = { urgent: 0, normal: 1, later: 2 };
+const PRIORITY_MAP: Record<Priority, number> = {
+  urgent: 0,
+  normal: 1,
+  later: 2,
+};
 
 export default function Home() {
   const [todos, setTodos] = useLocalStorage<Todo[]>("todos", []);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
-  const [toastConfig, setToastConfig] = useState({ isVisible: false, message: "", isError: false });
+  const [toastConfig, setToastConfig] = useState({
+    isVisible: false,
+    message: "",
+    isError: false,
+  });
 
-  const hideToast = () => setToastConfig((prev) => ({ ...prev, isVisible: false }));
+  const hideToast = () =>
+    setToastConfig((prev) => ({ ...prev, isVisible: false }));
 
   const addTodo = (text: string, priority: Priority) => {
-    const newTodo: Todo = { id: crypto.randomUUID(), text, completed: false, priority, createdAt: Date.now() };
+    const newTodo: Todo = {
+      id: crypto.randomUUID(),
+      text,
+      completed: false,
+      priority,
+      createdAt: Date.now(),
+    };
     setTodos([...todos, newTodo]);
-    setToastConfig({ isVisible: true, message: "Task added successfully!", isError: false });
+    setToastConfig({
+      isVisible: true,
+      message: "Task added successfully!",
+      isError: false,
+    });
   };
 
   const handleEmpty = () => {
-    setToastConfig({ isVisible: true, message: "Please enter a task before adding.", isError: true });
+    setToastConfig({
+      isVisible: true,
+      message: "Please enter a task before adding.",
+      isError: true,
+    });
   };
 
   const toggleTodo = (id: string) => {
-    setTodos(todos.map((t) => t.id === id ? { ...t, completed: !t.completed } : t));
+    setTodos(
+      todos.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)),
+    );
   };
 
   const deleteTodo = (id: string) => setTodos(todos.filter((t) => t.id !== id));
@@ -43,12 +68,17 @@ export default function Home() {
 
   const handleExport = () => {
     if (todos.length === 0) return;
-    
-    const priorityMap: Record<Priority, number> = { urgent: 0, normal: 1, later: 2 };
+
+    const priorityMap: Record<Priority, number> = {
+      urgent: 0,
+      normal: 1,
+      later: 2,
+    };
 
     const sortedForExport = [...todos].sort((a, b) => {
       if (a.completed === b.completed) {
-        if (a.priority !== b.priority) return priorityMap[a.priority] - priorityMap[b.priority];
+        if (a.priority !== b.priority)
+          return priorityMap[a.priority] - priorityMap[b.priority];
         return a.createdAt - b.createdAt;
       }
       return a.completed ? 1 : -1;
@@ -58,17 +88,25 @@ export default function Home() {
       Task: todo.text,
       check: todo.completed ? "✓" : "",
     }));
-    
-    const timestamp = new Date().toISOString().replace(/[-:T]/g, '').split('.')[0];
+
+    const timestamp = new Date()
+      .toISOString()
+      .replace(/[-:T]/g, "")
+      .split(".")[0];
     exportToExcel(exportData, `checklist-${timestamp}.xlsx`);
   };
 
   const sortedTodos = useMemo(() => {
-    const priorityMap: Record<Priority, number> = { urgent: 0, normal: 1, later: 2 };
+    const priorityMap: Record<Priority, number> = {
+      urgent: 0,
+      normal: 1,
+      later: 2,
+    };
 
     return [...todos].sort((a, b) => {
       if (a.completed !== b.completed) return a.completed ? 1 : -1;
-      if (a.priority !== b.priority) return priorityMap[a.priority] - priorityMap[b.priority];
+      if (a.priority !== b.priority)
+        return priorityMap[a.priority] - priorityMap[b.priority];
       return a.createdAt - b.createdAt;
     });
   }, [todos]);
@@ -85,15 +123,17 @@ export default function Home() {
               <div className="bg-zinc-900 dark:bg-white p-1.5 rounded-xl text-white dark:text-zinc-900 shadow-lg shadow-zinc-200 dark:shadow-none flex-shrink-0">
                 <CheckSquare className="w-5.5 h-5.5 sm:w-7 sm:h-7" />
               </div>
-              <h1 className="text-xl sm:text-3xl font-bold tracking-tight leading-none truncate">Checklist</h1>
+              <h1 className="text-xl sm:text-3xl font-bold tracking-tight leading-none truncate">
+                The Checklisted
+              </h1>
             </div>
             <p className="text-[10px] sm:text-sm text-zinc-500 dark:text-zinc-400 font-medium truncate">
-              {todos.length > 0 
+              {todos.length > 0
                 ? `${completedCount} of ${todos.length} tasks`
                 : "Organize your tasks."}
             </p>
           </div>
-         
+
           <div className="flex items-center gap-1.5 sm:gap-2">
             {todos.length > 0 && (
               <>
@@ -149,7 +189,7 @@ export default function Home() {
             </div>
           )}
         </div>
-        
+
         {/* Footer info */}
         <footer className="mt-4 pb-4 border-t border-zinc-100 dark:border-zinc-900 pt-4 flex flex-col items-center gap-2 flex-shrink-0">
           <div className="flex items-center gap-6">
