@@ -1,17 +1,20 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { TodoInput } from "./TodoInput";
-import { cn } from "@/lib/utils";
-import { useEffect } from "react";
+import { Priority } from "@/types/todo";
 
 interface TodoModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (text: string) => void;
+  onAdd: (text: string, priority: Priority) => void;
 }
 
 export function TodoModal({ isOpen, onClose, onAdd }: TodoModalProps) {
+  const [text, setText] = useState("");
+  const [priority, setPriority] = useState<Priority>("normal");
+
   // Prevent scrolling when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -25,6 +28,13 @@ export function TodoModal({ isOpen, onClose, onAdd }: TodoModalProps) {
   }, [isOpen]);
 
   if (!isOpen) return null;
+
+  const handleAdd = (textToAdd: string, priorityToAdd: Priority) => {
+    onAdd(textToAdd, priorityToAdd);
+    setText("");
+    setPriority("normal");
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -51,10 +61,13 @@ export function TodoModal({ isOpen, onClose, onAdd }: TodoModalProps) {
         </p>
         
         <div className="relative">
-          <TodoInput onAdd={(text) => {
-            onAdd(text);
-            onClose();
-          }} />
+          <TodoInput 
+            text={text}
+            setText={setText}
+            priority={priority}
+            setPriority={setPriority}
+            onAdd={handleAdd} 
+          />
         </div>
       </div>
     </div>

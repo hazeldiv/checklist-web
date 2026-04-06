@@ -8,7 +8,7 @@ import { Toast } from "@/components/Toast";
 import { exportToExcel } from "@/lib/utils";
 import { Todo, Priority } from "@/types/todo";
 import { Download, CheckSquare, Trash2, ShieldAlert } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 const PRIORITY_MAP: Record<Priority, number> = {
@@ -20,6 +20,10 @@ const PRIORITY_MAP: Record<Priority, number> = {
 export default function Home() {
   const [todos, setTodos] = useLocalStorage<Todo[]>("todos", []);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [text, setText] = useState("");
+  const [priority, setPriority] = useState<Priority>("normal");
+  const inputRef = useRef<HTMLInputElement>(null);
+  
   const [toastConfig, setToastConfig] = useState({
     isVisible: false,
     message: "",
@@ -29,12 +33,49 @@ export default function Home() {
   const hideToast = () =>
     setToastConfig((prev) => ({ ...prev, isVisible: false }));
 
-  const addTodo = (text: string, priority: Priority) => {
+  // Global listeners for Type-to-Focus and Universal Paste
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) return;
+
+      const isModifier = e.ctrlKey || e.metaKey || e.altKey;
+      const isFunctional = e.key.length > 1 && !["Backspace", "Delete", "Enter"].includes(e.key);
+
+      if (!isModifier && !isFunctional && inputRef.current) {
+        inputRef.current.focus();
+      }
+    };
+
+    const handleGlobalPaste = (e: ClipboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) return;
+
+      const pastedText = e.clipboardData?.getData("text") || "";
+      if (pastedText && inputRef.current) {
+        e.preventDefault();
+        // Validation: Limit to 500 characters
+        const truncatedText = pastedText.slice(0, 500);
+        
+        inputRef.current.focus();
+        setText((prev) => prev + truncatedText);
+      }
+    };
+
+    window.addEventListener("keydown", handleGlobalKeyDown);
+    window.addEventListener("paste", handleGlobalPaste);
+    return () => {
+      window.removeEventListener("keydown", handleGlobalKeyDown);
+      window.removeEventListener("paste", handleGlobalPaste);
+    };
+  }, []);
+
+  const addTodo = (textToAdd: string, priorityToAdd: Priority) => {
     const newTodo: Todo = {
       id: crypto.randomUUID(),
-      text,
+      text: textToAdd,
       completed: false,
-      priority,
+      priority: priorityToAdd,
       createdAt: Date.now(),
     };
     setTodos([...todos, newTodo]);
@@ -167,9 +208,16 @@ export default function Home() {
           </div>
         </header>
 
-        {/* Input Section */}
         <div className="mb-6 flex-shrink-0">
-          <TodoInput onAdd={addTodo} onEmpty={handleEmpty} />
+          <TodoInput 
+            ref={inputRef}
+            text={text}
+            setText={setText}
+            priority={priority}
+            setPriority={setPriority}
+            onAdd={addTodo} 
+            onEmpty={handleEmpty} 
+          />
         </div>
 
         {/* List Section */}
